@@ -79,6 +79,10 @@ class EmailAuthSerializer(AbstractBaseAliasAuthenticationSerializer):
 
     email = serializers.EmailField()
 
+class FullAuthSerializer(EmailAuthSerializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+
 
 class MobileAuthSerializer(AbstractBaseAliasAuthenticationSerializer):
     @property

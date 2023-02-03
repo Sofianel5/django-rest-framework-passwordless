@@ -66,6 +66,15 @@ class AbstractBaseObtainCallbackToken(APIView):
         else:
             return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
 
+class UserSignupCallback(APIView):
+    def post(self,request, *args,**kwargs):
+        SerializerClass = import_string(api_settings.PASSWORDLESS_USER_SERIALIZER_CLASS)
+        serializer = SerializerClass(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            return Response({'detail':'User created successfully'},status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
 
 class ObtainEmailCallbackToken(AbstractBaseObtainCallbackToken):
     permission_classes = (AllowAny,)
@@ -82,6 +91,7 @@ class ObtainEmailCallbackToken(AbstractBaseObtainCallbackToken):
     message_payload = {'email_subject': email_subject,
                        'email_plaintext': email_plaintext,
                        'email_html': email_html}
+
 
 
 class ObtainMobileCallbackToken(AbstractBaseObtainCallbackToken):

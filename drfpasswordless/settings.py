@@ -11,6 +11,9 @@ DEFAULTS = {
     # URL Prefix for Authentication Endpoints
     'PASSWORDLESS_AUTH_PREFIX': 'auth/',
 
+    # URL Prefix for Registration Endpoints
+    'PASSWORDLESS_REGISTER_PREFIX': 'auth/register/',
+
     #  URL Prefix for Verification Endpoints
     'PASSWORDLESS_VERIFY_PREFIX': 'auth/verify/',
 
