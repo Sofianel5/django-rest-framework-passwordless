@@ -1,10 +1,12 @@
 import logging
+import requests
 import os
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.template import loader
 from django.utils import timezone
+from django.conf import settings
 from rest_framework.authtoken.models import Token
 from drfpasswordless.models import CallbackToken
 from drfpasswordless.settings import api_settings
@@ -150,7 +152,7 @@ def send_email_with_callback_token(user, email_token, **kwargs):
         return True
 
     except Exception as e:
-        logger.debug("Failed to send token email to user: %d."
+        logger.debug("Failed to send token email to user: %d.\n"
                   "Possibly no email on user object. Email entered was %s" %
                   (user.id, getattr(user, api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME)))
         logger.debug(e)
@@ -211,3 +213,8 @@ def send_sms_with_callback_token(user, mobile_token, **kwargs):
 def create_authentication_token(user):
     """ Default way to create an authentication token"""
     return Token.objects.get_or_create(user=user)
+
+def verify_captcha(response):
+    payload = {'response':response, 'secret': settings.RECAPTCHA_SECRET_KEY}
+    r = requests.post("https://www.google.com/recaptcha/api/siteverify", data=payload)
+    return r.status_code == 200 and r.json()['success']

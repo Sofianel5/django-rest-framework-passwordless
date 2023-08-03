@@ -39,6 +39,8 @@ DEFAULTS = {
     # The email the callback token is sent from
     'PASSWORDLESS_EMAIL_NOREPLY_ADDRESS': None,
 
+    'PASSWORDLESS_EMAIL_NOREPLY_FN': None,
+
     # The email subject
     'PASSWORDLESS_EMAIL_SUBJECT': "Your Login Token",
 
@@ -86,13 +88,17 @@ DEFAULTS = {
     # exchanging a passwordless token for a real user auth token.
     'PASSWORDLESS_AUTH_TOKEN_SERIALIZER': 'drfpasswordless.serializers.TokenResponseSerializer',
 
+    'PASSWORDLESS_USER_SERIALIZER_CLASS': 'drfpasswordless.serializers.UserSerializer',
+
     # A dictionary of demo user's primary key mapped to their static pin
     'PASSWORDLESS_DEMO_USERS': {},
     'PASSWORDLESS_EMAIL_CALLBACK': 'drfpasswordless.utils.send_email_with_callback_token',
     'PASSWORDLESS_SMS_CALLBACK': 'drfpasswordless.utils.send_sms_with_callback_token',
 
     # Token Generation Retry Count
-    'PASSWORDLESS_TOKEN_GENERATION_ATTEMPTS': 3
+    'PASSWORDLESS_TOKEN_GENERATION_ATTEMPTS': 3,
+
+    'PASSWORDLESS_ENFORCE_CAPTCHA': False
 }
 
 # List of settings that may be in string import notation.

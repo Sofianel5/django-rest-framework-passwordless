@@ -13,6 +13,8 @@ from drfpasswordless.serializers import (
     CallbackTokenVerificationSerializer,
     EmailVerificationSerializer,
     MobileVerificationSerializer,
+    CaptchaGatedMobileAuthSerializer,
+    CaptchaGatedEmailAuthSerializer
 )
 from drfpasswordless.services import TokenService
 
@@ -47,6 +49,13 @@ class AbstractBaseObtainCallbackToken(APIView):
         if self.alias_type.upper() not in api_settings.PASSWORDLESS_AUTH_TYPES:
             # Only allow auth types allowed in settings.
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        if api_settings.PASSWORDLESS_ENFORCE_CAPTCHA:
+            # Must enforce captcha if setting is set.
+            if self.serializer_class is MobileAuthSerializer:
+                self.serializer_class = CaptchaGatedMobileAuthSerializer
+            elif self.serializer_class is EmailAuthSerializer:
+                self.serializer_class = CaptchaGatedEmailAuthSerializer
 
         serializer = self.serializer_class(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
@@ -105,7 +114,6 @@ class ObtainMobileCallbackToken(AbstractBaseObtainCallbackToken):
 
     mobile_message = api_settings.PASSWORDLESS_MOBILE_MESSAGE
     message_payload = {'mobile_message': mobile_message}
-
 
 class ObtainEmailVerificationCallbackToken(AbstractBaseObtainCallbackToken):
     permission_classes = (IsAuthenticated,)

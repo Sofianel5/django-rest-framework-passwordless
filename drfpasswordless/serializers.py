@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from drfpasswordless.models import CallbackToken
 from drfpasswordless.settings import api_settings
-from drfpasswordless.utils import verify_user_alias, validate_token_age
+from drfpasswordless.utils import verify_user_alias, validate_token_age, verify_captcha
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -94,6 +94,21 @@ class MobileAuthSerializer(AbstractBaseAliasAuthenticationSerializer):
                                          " '+999999999'. Up to 15 digits allowed.")
     mobile = serializers.CharField(validators=[phone_regex], max_length=17)
 
+class CaptchaGatedMobileAuthSerializer(MobileAuthSerializer):
+
+    captcha = serializers.CharField()
+
+    def validate(self, attrs):
+        captcha = attrs.get('captcha', None)
+        return verify_captcha(captcha) and super().validate(attrs)
+    
+class CaptchaGatedEmailAuthSerializer(EmailAuthSerializer):
+
+    captcha = serializers.CharField()
+
+    def validate(self, attrs):
+        captcha = attrs.get('captcha', None)
+        return verify_captcha(captcha) and super().validate(attrs)
 
 """
 Verification
