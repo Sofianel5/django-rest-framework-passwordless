@@ -51,7 +51,12 @@ class AbstractBaseAliasAuthenticationSerializer(serializers.Serializer):
                     else:
                         user = User.objects.get(**{self.alias_type+'__iexact': alias})
                 except User.DoesNotExist:
-                    user = User.objects.create(**{self.alias_type: alias})
+                    if self.alias_type == 'email':
+                        user = User.objects.create(**{api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME: alias})
+                    elif self.alias_type == 'mobile':
+                        user = User.objects.create(**{api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME: alias})
+                    else:
+                        user = User.objects.create(**{self.alias_type: alias})
                     user.set_unusable_password()
                     user.save()
             else:
