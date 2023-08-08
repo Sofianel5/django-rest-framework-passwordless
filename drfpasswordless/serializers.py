@@ -75,7 +75,7 @@ class AbstractBaseAliasAuthenticationSerializer(serializers.Serializer):
 class EmailAuthSerializer(AbstractBaseAliasAuthenticationSerializer):
     @property
     def alias_type(self):
-        return 'email'
+        return api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME
 
     email = serializers.EmailField()
 
@@ -164,13 +164,13 @@ class AbstractBaseAliasVerificationSerializer(serializers.Serializer):
 class EmailVerificationSerializer(AbstractBaseAliasVerificationSerializer):
     @property
     def alias_type(self):
-        return 'email'
+        return api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME
 
 
 class MobileVerificationSerializer(AbstractBaseAliasVerificationSerializer):
     @property
     def alias_type(self):
-        return 'mobile'
+        return api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME
 
 
 """
@@ -203,8 +203,8 @@ class AbstractBaseCallbackTokenSerializer(serializers.Serializer):
     token = TokenField(min_length=6, max_length=6, validators=[token_age_validator])
 
     def validate_alias(self, attrs):
-        email = attrs.get('email', None)
-        mobile = attrs.get('mobile', None)
+        email = attrs.get(api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME, None)
+        mobile = attrs.get(api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME, None)
 
         if email and mobile:
             raise serializers.ValidationError()
@@ -213,9 +213,9 @@ class AbstractBaseCallbackTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError()
 
         if email:
-            return 'email', email
+            return api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME, email
         elif mobile:
-            return 'mobile', mobile
+            return api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME, mobile
 
         return None
 
