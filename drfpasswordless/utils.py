@@ -1,6 +1,7 @@
 import logging
 import requests
 import os
+import json
 from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
@@ -222,5 +223,8 @@ def verify_captcha(token):
             "expectedAction": "login"
         }
     }
-    r = requests.post(f"https://recaptchaenterprise.googleapis.com/v1/projects/{settings.GCLOUD_PROJECT_ID}/assessments?key={settings.GCLOUD_API_KEY}", data=payload)
+    headers = {
+        'Content-Type': 'application/json; charset=utf-8'
+    }
+    r = requests.post(f"https://recaptchaenterprise.googleapis.com/v1/projects/{settings.GCLOUD_PROJECT_ID}/assessments?key={settings.GCLOUD_API_KEY}", headers=headers, data=json.dumps(payload))
     return r.status_code == 200 and r.json()['tokenProperties']['valid'] and r.json()['riskAnalysis']['score'] > 0.5
