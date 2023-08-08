@@ -171,25 +171,19 @@ def send_sms_with_callback_token(user, _, **kwargs):
         return True
 
     try:
-        if api_settings.PASSWORDLESS_MOBILE_NOREPLY_NUMBER:
-            # We need a sending number to send properly
+        from twilio.rest import Client
+        twilio_client = Client(os.environ['TWILIO_ACCOUNT_SID'], os.environ['TWILIO_AUTH_TOKEN'])
 
-            from twilio.rest import Client
-            twilio_client = Client(os.environ['TWILIO_ACCOUNT_SID'], os.environ['TWILIO_AUTH_TOKEN'])
+        to_number = getattr(user, api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME)
+        if to_number.__class__.__name__ == 'PhoneNumber':
+            to_number = to_number.__str__()
 
-            to_number = getattr(user, api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME)
-            if to_number.__class__.__name__ == 'PhoneNumber':
-                to_number = to_number.__str__()
-
-            twilio_client.verify \
-                     .v2 \
-                     .services(os.environ['TWILIO_SERVICE']) \
-                     .verifications \
-                     .create(to=to_number, channel='sms')
-            return True
-        else:
-            logger.debug("Failed to send token sms. Missing PASSWORDLESS_MOBILE_NOREPLY_NUMBER.")
-            return False
+        twilio_client.verify \
+                    .v2 \
+                    .services(os.environ['TWILIO_SERVICE']) \
+                    .verifications \
+                    .create(to=to_number, channel='sms')
+        return True
     except ImportError:
         logger.debug("Couldn't import Twilio client. Is twilio installed?")
         return False
