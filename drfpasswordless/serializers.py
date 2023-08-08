@@ -210,7 +210,7 @@ class AbstractBaseCallbackTokenSerializer(serializers.Serializer):
 
     email = serializers.EmailField(required=False)  # Needs to be required=false to require both.
     mobile = serializers.CharField(required=False, validators=[phone_regex], max_length=17)
-    token = TokenField(min_length=6, max_length=6, validators=[token_age_validator])
+    token = TokenField(min_length=6, max_length=6)
 
     def validate_alias(self, attrs):
         email = attrs.get(api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME, None)
@@ -250,6 +250,9 @@ class CallbackTokenAuthSerializer(AbstractBaseCallbackTokenSerializer):
                         msg = _('Invalid SMS Code')
                         raise serializers.ValidationError(msg)
                 else:
+                    if not validate_token_age(callback_token):
+                        msg = _('Invalid Code')
+                        raise serializers.ValidationError(msg)
                     if not token.key == callback_token:
                         msg = _('Invalid Code')
                         raise serializers.ValidationError(msg)
