@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from drfpasswordless.models import CallbackToken
 from drfpasswordless.settings import api_settings
-from drfpasswordless.utils import verify_user_alias, validate_token_age, verify_captcha
+from drfpasswordless.utils import verify_user_alias, validate_token_age, verify_captcha, validate_twilio_token
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -239,13 +239,21 @@ class CallbackTokenAuthSerializer(AbstractBaseCallbackTokenSerializer):
             callback_token = attrs.get('token', None)
             user = User.objects.get(**{alias_type+'__iexact': alias})
             token = CallbackToken.objects.get(**{'user': user,
-                                                 'key': callback_token,
                                                  'type': CallbackToken.TOKEN_TYPE_AUTH,
                                                  'is_active': True})
 
             if token.user == user:
                 # Check the token type for our uni-auth method.
                 # authenticates and checks the expiry of the callback token.
+                if token.to_alias_type == "MOBILE":
+                    if not validate_twilio_token(user, callback_token):
+                        msg = _('Invalid SMS Code')
+                        raise serializers.ValidationError(msg)
+                else:
+                    if not token.key == callback_token:
+                        msg = _('Invalid Code')
+                        raise serializers.ValidationError(msg)
+
                 if not user.is_active:
                     msg = _('User account is disabled.')
                     raise serializers.ValidationError(msg)
