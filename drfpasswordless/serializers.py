@@ -87,7 +87,7 @@ class FullAuthSerializer(EmailAuthSerializer):
 class MobileAuthSerializer(AbstractBaseAliasAuthenticationSerializer):
     @property
     def alias_type(self):
-        return 'mobile'
+        return api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME
 
     phone_regex = RegexValidator(regex=r'^\+[1-9]\d{1,14}$',
                                  message="Mobile number must be entered in the format:"
