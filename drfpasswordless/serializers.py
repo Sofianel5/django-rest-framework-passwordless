@@ -100,7 +100,10 @@ class CaptchaGatedMobileAuthSerializer(MobileAuthSerializer):
 
     def validate(self, attrs):
         captcha = attrs.get('captcha', None)
-        return verify_captcha(captcha) and super().validate(attrs)
+        if not verify_captcha(captcha):
+            msg = _('Invalid captcha.')
+            raise serializers.ValidationError(msg)
+        return super().validate(attrs)
     
 class CaptchaGatedEmailAuthSerializer(EmailAuthSerializer):
 
@@ -108,7 +111,10 @@ class CaptchaGatedEmailAuthSerializer(EmailAuthSerializer):
 
     def validate(self, attrs):
         captcha = attrs.get('captcha', None)
-        return verify_captcha(captcha) and super().validate(attrs)
+        if not verify_captcha(captcha):
+            msg = _('Invalid captcha.')
+            raise serializers.ValidationError(msg)
+        return super().validate(attrs)
 
 """
 Verification
