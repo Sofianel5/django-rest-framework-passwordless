@@ -214,7 +214,13 @@ def create_authentication_token(user):
     """ Default way to create an authentication token"""
     return Token.objects.get_or_create(user=user)
 
-def verify_captcha(response):
-    payload = {'response':response, 'secret': settings.RECAPTCHA_SECRET_KEY}
-    r = requests.post("https://www.google.com/recaptcha/api/siteverify", data=payload)
-    return r.status_code == 200 and r.json()['success']
+def verify_captcha(token):
+    payload = {
+        "event": {
+            "token": token,
+            "siteKey": settings.RECAPTCHA_KEY,
+            "expectedAction": "login"
+        }
+    }
+    r = requests.post(f"https://recaptchaenterprise.googleapis.com/v1/projects/{settings.GCLOUD_PROJECT_ID}/assessments?key={settings.GCLOUD_API_KEY}", data=payload)
+    return r.status_code == 200 and r.json()['tokenProperties']['valid'] and r.json()['riskAnalysis']['score'] > 0.5
