@@ -91,7 +91,7 @@ class ObtainEmailCallbackToken(AbstractBaseObtainCallbackToken):
     success_response = "A login token has been sent to your email."
     failure_response = "Unable to email you a login code. Try again later."
 
-    alias_type = 'email'
+    alias_type = api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME
     token_type = CallbackToken.TOKEN_TYPE_AUTH
 
     email_subject = api_settings.PASSWORDLESS_EMAIL_SUBJECT
@@ -109,7 +109,7 @@ class ObtainMobileCallbackToken(AbstractBaseObtainCallbackToken):
     success_response = "We texted you a login code."
     failure_response = "Unable to send you a login code. Try again later."
 
-    alias_type = 'mobile'
+    alias_type = api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME
     token_type = CallbackToken.TOKEN_TYPE_AUTH
 
     mobile_message = api_settings.PASSWORDLESS_MOBILE_MESSAGE
@@ -121,7 +121,7 @@ class ObtainEmailVerificationCallbackToken(AbstractBaseObtainCallbackToken):
     success_response = "A verification token has been sent to your email."
     failure_response = "Unable to email you a verification code. Try again later."
 
-    alias_type = 'email'
+    alias_type = api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME
     token_type = CallbackToken.TOKEN_TYPE_VERIFY
 
     email_subject = api_settings.PASSWORDLESS_EMAIL_VERIFICATION_SUBJECT
@@ -140,7 +140,7 @@ class ObtainMobileVerificationCallbackToken(AbstractBaseObtainCallbackToken):
     success_response = "We texted you a verification code."
     failure_response = "Unable to send you a verification code. Try again later."
 
-    alias_type = 'mobile'
+    alias_type = api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME
     token_type = CallbackToken.TOKEN_TYPE_VERIFY
 
     mobile_message = api_settings.PASSWORDLESS_MOBILE_MESSAGE

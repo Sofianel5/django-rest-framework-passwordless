@@ -13,9 +13,9 @@ class TokenService(object):
 
         if user.pk in api_settings.PASSWORDLESS_DEMO_USERS.keys():
             return True
-        if alias_type == 'email':
+        if alias_type == api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME:
             send_action = import_string(api_settings.PASSWORDLESS_EMAIL_CALLBACK)
-        elif alias_type == 'mobile':
+        elif alias_type == api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME:
             send_action = import_string(api_settings.PASSWORDLESS_SMS_CALLBACK)
         # Send to alias
         success = send_action(user, token, **message_payload)

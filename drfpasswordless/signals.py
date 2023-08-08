@@ -102,7 +102,7 @@ def update_alias_verification(sender, instance, **kwargs):
                             message_payload = {'email_subject': email_subject,
                                                'email_plaintext': email_plaintext,
                                                'email_html': email_html}
-                            success = TokenService.send_token(instance, 'email', CallbackToken.TOKEN_TYPE_VERIFY, **message_payload)
+                            success = TokenService.send_token(instance, api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME, CallbackToken.TOKEN_TYPE_VERIFY, **message_payload)
 
                             if success:
                                 logger.info('drfpasswordless: Successfully sent email on updated address: %s'
@@ -134,7 +134,7 @@ def update_alias_verification(sender, instance, **kwargs):
                         if api_settings.PASSWORDLESS_AUTO_SEND_VERIFICATION_TOKEN is True:
                             mobile_message = api_settings.PASSWORDLESS_MOBILE_MESSAGE
                             message_payload = {'mobile_message': mobile_message}
-                            success = TokenService.send_token(instance, 'mobile', CallbackToken.TOKEN_TYPE_VERIFY, **message_payload)
+                            success = TokenService.send_token(instance, api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME, CallbackToken.TOKEN_TYPE_VERIFY, **message_payload)
 
                             if success:
                                 logger.info('drfpasswordless: Successfully sent SMS on updated mobile: %s'
