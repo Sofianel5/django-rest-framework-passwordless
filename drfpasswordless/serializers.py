@@ -213,8 +213,8 @@ class AbstractBaseCallbackTokenSerializer(serializers.Serializer):
     token = TokenField(min_length=6, max_length=6)
 
     def validate_alias(self, attrs):
-        email = attrs.get(api_settings.PASSWORDLESS_USER_EMAIL_FIELD_NAME, None)
-        mobile = attrs.get(api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME, None)
+        email = attrs.get("email", None)
+        mobile = attrs.get("mobile", None)
 
         if email and mobile:
             raise serializers.ValidationError()
