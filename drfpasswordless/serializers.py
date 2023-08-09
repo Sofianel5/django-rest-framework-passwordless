@@ -284,6 +284,9 @@ class CallbackTokenAuthSerializer(AbstractBaseCallbackTokenSerializer):
         except User.DoesNotExist:
             msg = _('Invalid user alias parameters provided.')
             raise serializers.ValidationError(msg)
+        except Exception as e:
+            logger.error("CallbackTokenAuthSerializer Exception", e)
+            raise e
 
 
 class CallbackTokenVerificationSerializer(AbstractBaseCallbackTokenSerializer):
