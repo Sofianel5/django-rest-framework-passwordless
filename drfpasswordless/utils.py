@@ -231,4 +231,4 @@ def verify_captcha(token):
         'Content-Type': 'application/json; charset=utf-8'
     }
     r = requests.post(f"https://recaptchaenterprise.googleapis.com/v1/projects/{settings.GCLOUD_PROJECT_ID}/assessments?key={settings.GCLOUD_API_KEY}", headers=headers, data=json.dumps(payload))
-    return r.status_code == 200 and r.json()['tokenProperties']['valid'] and r.json()['riskAnalysis']['score'] > 0.5
+    return r.status_code == 200 and r.json()['tokenProperties']['valid'] and r.json()['riskAnalysis']['score'] > api_settings.PASSWORDLESS_RECAPTCHA_THRESHOLD

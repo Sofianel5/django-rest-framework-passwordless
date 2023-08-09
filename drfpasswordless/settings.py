@@ -98,7 +98,9 @@ DEFAULTS = {
     # Token Generation Retry Count
     'PASSWORDLESS_TOKEN_GENERATION_ATTEMPTS': 3,
 
-    'PASSWORDLESS_ENFORCE_CAPTCHA': False
+    'PASSWORDLESS_ENFORCE_CAPTCHA': False,
+
+    'PASSWORDLESS_RECAPTCHA_THRESHOLD': 0
 }
 
 # List of settings that may be in string import notation.
