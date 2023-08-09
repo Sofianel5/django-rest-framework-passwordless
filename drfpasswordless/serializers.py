@@ -15,11 +15,11 @@ User = get_user_model()
 
 class TokenField(serializers.CharField):
     default_error_messages = {
-        'required': _('Invalid Token'),
-        'invalid': _('Invalid Token'),
-        'blank': _('Invalid Token'),
-        'max_length': _('Tokens are {max_length} digits long.'),
-        'min_length': _('Tokens are {min_length} digits long.')
+        'required': _('Token Required'),
+        'invalid': _('Token Invalid'),
+        'blank': _('Blank Token'),
+        'max_length': _('Tokens are {max_length}> digits long.'),
+        'min_length': _('Tokens are {min_length}< digits long.')
     }
 
 
