@@ -60,8 +60,6 @@ def create_callback_token_for_user(user, alias_type, token_type):
                                             to_alias=getattr(user, to_alias_field),
                                             type=token_type)
 
-
-
     if token is not None:
         return token
 
@@ -189,7 +187,8 @@ def send_sms_with_callback_token(user, _, **kwargs):
         return False
     except KeyError:
         logger.debug("Couldn't send SMS."
-                  "Did you set your Twilio account tokens and specify a PASSWORDLESS_MOBILE_NOREPLY_NUMBER?")
+                  "Did you set your Twilio account tokens?")
+        return False
     except Exception as e:
         logger.debug("Failed to send token SMS to user: {}. "
                   "Possibly no mobile number on user object or the twilio package isn't set up yet. "
