@@ -211,6 +211,7 @@ class AbstractBaseCallbackTokenSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False)  # Needs to be required=false to require both.
     mobile = serializers.CharField(required=False, validators=[phone_regex], max_length=17)
     token = TokenField(min_length=6, max_length=6)
+    captcha = serializers.CharField()
 
     def validate_alias(self, attrs):
         email = attrs.get("email", None)
@@ -245,6 +246,10 @@ class CallbackTokenAuthSerializer(AbstractBaseCallbackTokenSerializer):
             if token.user == user:
                 # Check the token type for our uni-auth method.
                 # authenticates and checks the expiry of the callback token.
+                captcha = attrs.get('captcha', None)
+                if not verify_captcha(captcha):
+                    msg = _('Invalid captcha.')
+                    raise serializers.ValidationError(msg)
                 if token.to_alias_type == "MOBILE":
                     if not validate_twilio_token(user, callback_token):
                         msg = _('Invalid SMS Code')
