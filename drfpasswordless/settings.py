@@ -100,7 +100,13 @@ DEFAULTS = {
 
     'PASSWORDLESS_ENFORCE_CAPTCHA': False,
 
-    'PASSWORDLESS_RECAPTCHA_THRESHOLD': 0
+    'PASSWORDLESS_RECAPTCHA_THRESHOLD': 0,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'dj_rest_auth': '2/min',
+    }
 }
 
 # List of settings that may be in string import notation.

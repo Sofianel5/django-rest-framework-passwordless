@@ -30,6 +30,8 @@ class AbstractBaseObtainCallbackToken(APIView):
 
     message_payload = {}
 
+    throttle_scope = 'dj_rest_auth'
+
     @property
     def serializer_class(self):
         # Our serializer depending on type
@@ -154,6 +156,7 @@ class AbstractBaseObtainAuthToken(APIView):
     Instead, this returns an Auth Token based on our 6 digit callback token and source.
     """
     serializer_class = None
+    throttle_scope = 'dj_rest_auth'
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
