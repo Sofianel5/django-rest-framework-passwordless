@@ -193,7 +193,7 @@ def send_sms_with_callback_token(user, _, **kwargs):
         logger.debug("Failed to send token SMS to user: {}. "
                   "Possibly no mobile number on user object or the twilio package isn't set up yet. "
                   "Number entered was {}".format(user.id, getattr(user, api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME)))
-        logger.debug(e)
+        logger.exception(e)
         return False
     
 def validate_twilio_token(user, token):
