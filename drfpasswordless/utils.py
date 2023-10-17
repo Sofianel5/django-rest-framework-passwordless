@@ -170,7 +170,7 @@ def send_sms_with_callback_token(user, _, **kwargs):
 
     try:
         from twilio.rest import Client
-        twilio_client = Client(os.environ['TWILIO_ACCOUNT_SID'], os.environ['TWILIO_AUTH_TOKEN'])
+        twilio_client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
         to_number = getattr(user, api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME)
         if to_number.__class__.__name__ == 'PhoneNumber':
@@ -199,7 +199,7 @@ def send_sms_with_callback_token(user, _, **kwargs):
 def validate_twilio_token(user, token):
     try:
         from twilio.rest import Client
-        twilio_client = Client(os.environ['TWILIO_ACCOUNT_SID'], os.environ['TWILIO_AUTH_TOKEN'])
+        twilio_client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
         to_number = getattr(user, api_settings.PASSWORDLESS_USER_MOBILE_FIELD_NAME)
         if to_number.__class__.__name__ == 'PhoneNumber':
             to_number = to_number.__str__()
