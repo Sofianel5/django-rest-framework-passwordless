@@ -158,7 +158,7 @@ def send_email_with_callback_token(user, email_token, **kwargs):
         return False
 
 
-def send_sms_with_callback_token(user, _, **kwargs):
+def send_sms_with_callback_token(user, mobile_token, **kwargs):
     """
     Sends a SMS to user.mobile via Twilio Verify.
 
@@ -166,7 +166,14 @@ def send_sms_with_callback_token(user, _, **kwargs):
     """
     if api_settings.PASSWORDLESS_TEST_SUPPRESSION is True:
         # we assume success to prevent spamming SMS during testing.
+
+        # even if you have suppression on– you must provide a number if you have mobile selected.
+        if api_settings.PASSWORDLESS_MOBILE_NOREPLY_NUMBER is None:
+            return False
+        
         return True
+    
+    base_string = kwargs.get('mobile_message', api_settings.PASSWORDLESS_MOBILE_MESSAGE)
 
     try:
         from twilio.rest import Client
@@ -176,11 +183,11 @@ def send_sms_with_callback_token(user, _, **kwargs):
         if to_number.__class__.__name__ == 'PhoneNumber':
             to_number = to_number.__str__()
 
-        twilio_client.verify \
-                    .v2 \
-                    .services(os.environ['TWILIO_SERVICE']) \
-                    .verifications \
-                    .create(to=to_number, channel='sms')
+        twilio_client.messages.create(
+                body=base_string % mobile_token.key,
+                to=to_number,
+                from_=api_settings.PASSWORDLESS_MOBILE_NOREPLY_NUMBER
+            )
         return True
     except ImportError:
         logger.debug("Couldn't import Twilio client. Is twilio installed?")
